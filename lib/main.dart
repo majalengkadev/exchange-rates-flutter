@@ -31,7 +31,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   Dio dio = Dio();
-  ExchangeRates exchangeRates;
   bool isLoading = true;
   TextEditingController _controller;
   Currency origin = Currency(
@@ -47,23 +46,12 @@ class _MyHomePageState extends State<MyHomePage> {
       flag: "id",
       symbol: "Rp");
   int current = 1;
-  List<Currency> c = getDataCurrency();
+  List<Currency> currencies = getDataCurrency();
+
   @override
   void initState() {
     super.initState();
     _controller = TextEditingController(text: '$current');
-    getData();
-  }
-
-  getData() async {
-    Response response = await dio
-        .get("https://api.exchangeratesapi.io/latest?base=${origin.value}");
-    print(response.data);
-
-    setState(() {
-      exchangeRates = ExchangeRates.fromJson(response.data);
-      isLoading = false;
-    });
   }
 
   @override
@@ -72,112 +60,120 @@ class _MyHomePageState extends State<MyHomePage> {
         appBar: AppBar(
           title: Text(widget.title),
         ),
-        body: isLoading
-            ? Center(child: CircularProgressIndicator())
-            : Column(
-                children: <Widget>[
-                  Text(
-                    "Last Update: ${exchangeRates.date}",
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  ButtonTheme(
-                    alignedDropdown: true,
-                    child: DropdownButton<Currency>(
-                      hint: Text(origin.text, textAlign: TextAlign.center),
-                      items: c.map((Currency value) {
-                        return DropdownMenuItem<Currency>(
-                          value: value,
-                          child: Row(
-                            children: <Widget>[
-                              Flags.getFullFlag('${value.flag}', 10, 20),
-                              Text(' ${value.text}'),
-                            ],
-                          ),
-                        );
-                      }).toList(),
-                      onChanged: (value) {
-                        print(value);
-                        setState(() {
-                          origin = value;
-                        });
-                        getData();
-                      },
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 16),
-                    child: TextField(
+        body: FutureBuilder<ExchangeRates>(
+            future: dio
+                .get(
+                    "https://api.exchangeratesapi.io/latest?base=${origin.value}")
+                .then((resp) => ExchangeRates.fromJson(resp.data)),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Column(
+                  children: <Widget>[
+                    Text(
+                      "Last Update: ${snapshot.data.date}",
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 36),
-                      keyboardType: TextInputType.number,
-                      controller: _controller,
-                      onChanged: (value) {
-                        setState(() {
-                          current = int.parse(value);
-                        });
-                      },
                     ),
-                  ),
-                  Container(
-                    height: 100,
-                    child: FlatButton(
-                      onPressed: () {
-                        Currency temp = origin;
-                        setState(() {
-                          origin = destination;
-                          destination = temp;
-                          getData();
-                        });
-                      },
-                      child: CircleAvatar(
-                        child: Icon(Icons.swap_vert),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    ButtonTheme(
+                      alignedDropdown: true,
+                      child: DropdownButton<Currency>(
+                        hint: Text(origin.text, textAlign: TextAlign.center),
+                        items: currencies.map((Currency value) {
+                          return DropdownMenuItem<Currency>(
+                            value: value,
+                            child: Row(
+                              children: <Widget>[
+                                Flags.getFullFlag('${value.flag}', 10, 20),
+                                Text(' ${value.text}'),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          print(value);
+                          setState(() {
+                            origin = value;
+                          });
+                        },
                       ),
                     ),
-                  ),
-                  ButtonTheme(
-                    alignedDropdown: true,
-                    child: DropdownButton<Currency>(
-                      hint: Text(destination.text, textAlign: TextAlign.center),
-                      items: c.map((Currency value) {
-                        return DropdownMenuItem<Currency>(
-                          value: value,
-                          child: Row(
-                            children: <Widget>[
-                              Flags.getFullFlag('${value.flag}', 10, 20),
-                              Text(' ${value.text}'),
-                            ],
-                          ),
-                        );
-                      }).toList(),
-                      onChanged: (value) {
-                        print(value);
-                        setState(() {
-                          destination = value;
-                        });
-                      },
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 16),
+                      child: TextField(
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 36),
+                        keyboardType: TextInputType.number,
+                        controller: _controller,
+                        onChanged: (value) {
+                          setState(() {
+                            current = int.parse(value);
+                          });
+                        },
+                      ),
                     ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        "=",
-                        style: TextStyle(fontSize: 42),
+                    Container(
+                      height: 100,
+                      child: FlatButton(
+                        onPressed: () {
+                          Currency temp = origin;
+                          setState(() {
+                            origin = destination;
+                            destination = temp;
+                          });
+                        },
+                        child: CircleAvatar(
+                          child: Icon(Icons.swap_vert),
+                        ),
                       ),
-                      Text(
-                        FlutterMoneyFormatter(
-                                amount: exchangeRates.rates[destination.value] *
-                                    current)
-                            .output
-                            .nonSymbol,
-                        style: TextStyle(fontSize: 40),
+                    ),
+                    ButtonTheme(
+                      alignedDropdown: true,
+                      child: DropdownButton<Currency>(
+                        hint:
+                            Text(destination.text, textAlign: TextAlign.center),
+                        items: currencies.map((Currency value) {
+                          return DropdownMenuItem<Currency>(
+                            value: value,
+                            child: Row(
+                              children: <Widget>[
+                                Flags.getFullFlag('${value.flag}', 10, 20),
+                                Text(' ${value.text}'),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          print(value);
+                          setState(() {
+                            destination = value;
+                          });
+                        },
                       ),
-                    ],
-                  )
-                ],
-              ));
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          "=",
+                          style: TextStyle(fontSize: 42),
+                        ),
+                        Text(
+                          FlutterMoneyFormatter(
+                                  amount:
+                                      snapshot.data.rates[destination.value] *
+                                          current)
+                              .output
+                              .nonSymbol,
+                          style: TextStyle(fontSize: 40),
+                        ),
+                      ],
+                    )
+                  ],
+                );
+              }
+              return Center(child: CircularProgressIndicator());
+            }));
   }
 }
