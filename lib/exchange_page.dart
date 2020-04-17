@@ -122,7 +122,6 @@ class _ExchangePageState extends State<ExchangePage> {
               Column(
                 children: <Widget>[
                   Container(
-                    height: 168,
                     padding: const EdgeInsets.symmetric(
                         horizontal: 32, vertical: 32),
                     child: Row(
