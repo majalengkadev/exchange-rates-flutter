@@ -1,4 +1,4 @@
-package id.ihwan.exchangerates
+package dev.majalengka.kursmatauang
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity
