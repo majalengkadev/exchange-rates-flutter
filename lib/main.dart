@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:exchangerates/exchange_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +14,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: ExchangePage(title: 'Exchange Rates'),
+      home: ExchangePage(),
       debugShowCheckedModeBanner: false,
     );
   }
