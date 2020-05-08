@@ -1,3 +1,4 @@
+import 'package:device_info/device_info.dart';
 import 'package:dio/dio.dart';
 import 'package:exchangerates/models/exchange_rates.dart';
 import 'package:exchangerates/select_currency.dart';
@@ -43,12 +44,16 @@ class _ExchangePageState extends State<ExchangePage> {
 
   BannerAd createBannerAd() {
     return BannerAd(
-      adUnitId: 'ca-app-pub-9619934169053673/5625207799',
+      //adUnitId: 'ca-app-pub-9619934169053673/5625207799',
+      adUnitId: ,
       size: AdSize.banner,
       targetingInfo: MobileAdTargetingInfo(
-        keywords: <String>['exchangerates', 'money'],
+        keywords: <String>['finance', 'money'],
         contentUrl: 'https://exchangeratesapi.io',
-        childDirected: false, // Android emulators are considered test devices
+        childDirected: false,
+        testDevices: [
+          "650f2011a0be19e1",
+        ], // Android emulators are considered test devices
       ),
       listener: (MobileAdEvent event) {
         print("BannerAd event $event");

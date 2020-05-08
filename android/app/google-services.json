@@ -1,0 +1,41 @@
+{
+  "project_info": {
+    "project_number": "528810518418",
+    "firebase_url": "https://kursmatauang-2020.firebaseio.com",
+    "project_id": "kursmatauang-2020",
+    "storage_bucket": "kursmatauang-2020.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:528810518418:android:073561146dbdb3a39fc34b",
+        "android_client_info": {
+          "package_name": "dev.majalengka.kursmatauang"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "528810518418-jm0hbl2nadn86il2u8dl8ibv43hg9h7u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCETizLFl2FNitl4EjdfPQeaBSLkG2ZiVA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "528810518418-jm0hbl2nadn86il2u8dl8ibv43hg9h7u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      },
+      "admob_app_id": "ca-app-pub-9619934169053673~5402966071"
+    }
+  ],
+  "configuration_version": "1"
+}
