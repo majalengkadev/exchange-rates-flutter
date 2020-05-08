@@ -1,4 +1,3 @@
-import 'package:device_info/device_info.dart';
 import 'package:dio/dio.dart';
 import 'package:exchangerates/models/exchange_rates.dart';
 import 'package:exchangerates/select_currency.dart';
@@ -50,9 +49,6 @@ class _ExchangePageState extends State<ExchangePage> {
         keywords: <String>['finance', 'money'],
         contentUrl: 'https://exchangeratesapi.io',
         childDirected: false,
-//        testDevices: [
-//          "650f2011a0be19e1",
-//        ], // Android emulators are considered test devices
       ),
       listener: (MobileAdEvent event) {
         print("BannerAd event $event");
@@ -73,7 +69,9 @@ class _ExchangePageState extends State<ExchangePage> {
     super.initState();
     FirebaseAdMob.instance
         .initialize(appId: 'ca-app-pub-9619934169053673~5402966071');
-    _bannerAd = createBannerAd()..load()..show();
+    _bannerAd = createBannerAd()
+      ..load()
+      ..show();
     _controller = TextEditingController(text: '1');
     getData();
   }
@@ -94,10 +92,6 @@ class _ExchangePageState extends State<ExchangePage> {
               child: InkWell(
                   onTap: () {
                     showInfo();
-//                    _bannerAd ??= createBannerAd();
-//                    _bannerAd
-//                      ..load()
-//                      ..show();
                   },
                   child: Icon(
                     Icons.info_outline,
@@ -189,8 +183,6 @@ class _ExchangePageState extends State<ExchangePage> {
                             children: <Widget>[
                               InkWell(
                                 onTap: () async {
-//                                  _bannerAd?.dispose();
-//                                  _bannerAd = null;
                                   final hasil = await Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -393,10 +385,6 @@ class _ExchangePageState extends State<ExchangePage> {
                     });
 
                     convertAction();
-//                    _bannerAd ??= createBannerAd();
-//                    _bannerAd
-//                      ..load()
-//                      ..show();
                   },
                   child: Container(
                       decoration: BoxDecoration(
