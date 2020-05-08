@@ -38,20 +38,23 @@ class _SelectCurrencyState extends State<SelectCurrency> {
         ],
       ),
       backgroundColor: Colors.white,
-      body: ListView.builder(
-        itemCount: currencies.length,
-        itemBuilder: (context, index) {
-          final x = currencies[index];
-          return InkWell(
-            onTap: (){
-              setState(() {
-                Navigator.pop(context, x);
-              });
-            },
-            child: ItemCurrency(x, x.key == widget.currency.key ? true : false
-            ),
-          );
-        },
+      body: Padding(
+        padding: const EdgeInsets.only(bottom: 54.0),
+        child: ListView.builder(
+          itemCount: currencies.length,
+          itemBuilder: (context, index) {
+            final x = currencies[index];
+            return InkWell(
+              onTap: (){
+                setState(() {
+                  Navigator.pop(context, x);
+                });
+              },
+              child: ItemCurrency(x, x.key == widget.currency.key ? true : false
+              ),
+            );
+          },
+        ),
       ),
 
     );

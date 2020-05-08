@@ -44,16 +44,15 @@ class _ExchangePageState extends State<ExchangePage> {
 
   BannerAd createBannerAd() {
     return BannerAd(
-      //adUnitId: 'ca-app-pub-9619934169053673/5625207799',
-      adUnitId: ,
+      adUnitId: 'ca-app-pub-9619934169053673/5625207799',
       size: AdSize.banner,
       targetingInfo: MobileAdTargetingInfo(
         keywords: <String>['finance', 'money'],
         contentUrl: 'https://exchangeratesapi.io',
         childDirected: false,
-        testDevices: [
-          "650f2011a0be19e1",
-        ], // Android emulators are considered test devices
+//        testDevices: [
+//          "650f2011a0be19e1",
+//        ], // Android emulators are considered test devices
       ),
       listener: (MobileAdEvent event) {
         print("BannerAd event $event");
@@ -74,9 +73,8 @@ class _ExchangePageState extends State<ExchangePage> {
     super.initState();
     FirebaseAdMob.instance
         .initialize(appId: 'ca-app-pub-9619934169053673~5402966071');
-    _bannerAd = createBannerAd()..load();
+    _bannerAd = createBannerAd()..load()..show();
     _controller = TextEditingController(text: '1');
-
     getData();
   }
 
@@ -96,10 +94,10 @@ class _ExchangePageState extends State<ExchangePage> {
               child: InkWell(
                   onTap: () {
                     showInfo();
-                    _bannerAd ??= createBannerAd();
-                    _bannerAd
-                      ..load()
-                      ..show();
+//                    _bannerAd ??= createBannerAd();
+//                    _bannerAd
+//                      ..load()
+//                      ..show();
                   },
                   child: Icon(
                     Icons.info_outline,
@@ -109,38 +107,41 @@ class _ExchangePageState extends State<ExchangePage> {
           ],
         ),
         backgroundColor: Colors.white,
-        body: FutureBuilder<ExchangeRates>(
-            future: future,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return showData(snapshot.data);
-              } else if (snapshot.hasError) {
-                return Center(
-                    child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    children: <Widget>[
-                      Text("Upps error\n${snapshot.error.toString()}"),
-                      OutlineButton(
-                        color: Colors.lightBlue,
-                        onPressed: () {
-                          getData();
-                        },
-                        child: Text(
-                          "Try Again",
-                          style: TextStyle(color: Colors.lightBlue),
-                        ),
-                      )
-                    ],
-                  ),
-                ));
-              } else {
-                return Center(
-                    child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                ));
-              }
-            }));
+        body: Padding(
+          padding: const EdgeInsets.only(bottom: 54),
+          child: FutureBuilder<ExchangeRates>(
+              future: future,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return showData(snapshot.data);
+                } else if (snapshot.hasError) {
+                  return Center(
+                      child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      children: <Widget>[
+                        Text("Upps error\n${snapshot.error.toString()}"),
+                        OutlineButton(
+                          color: Colors.lightBlue,
+                          onPressed: () {
+                            getData();
+                          },
+                          child: Text(
+                            "Try Again",
+                            style: TextStyle(color: Colors.lightBlue),
+                          ),
+                        )
+                      ],
+                    ),
+                  ));
+                } else {
+                  return Center(
+                      child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                  ));
+                }
+              }),
+        ));
   }
 
   void getData() {
@@ -188,8 +189,8 @@ class _ExchangePageState extends State<ExchangePage> {
                             children: <Widget>[
                               InkWell(
                                 onTap: () async {
-                                  _bannerAd?.dispose();
-                                  _bannerAd = null;
+//                                  _bannerAd?.dispose();
+//                                  _bannerAd = null;
                                   final hasil = await Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -305,8 +306,8 @@ class _ExchangePageState extends State<ExchangePage> {
                             children: <Widget>[
                               InkWell(
                                 onTap: () async {
-                                  _bannerAd?.dispose();
-                                  _bannerAd = null;
+//                                  _bannerAd?.dispose();
+//                                  _bannerAd = null;
                                   final hasil = await Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -392,10 +393,10 @@ class _ExchangePageState extends State<ExchangePage> {
                     });
 
                     convertAction();
-                    _bannerAd ??= createBannerAd();
-                    _bannerAd
-                      ..load()
-                      ..show();
+//                    _bannerAd ??= createBannerAd();
+//                    _bannerAd
+//                      ..load()
+//                      ..show();
                   },
                   child: Container(
                       decoration: BoxDecoration(
