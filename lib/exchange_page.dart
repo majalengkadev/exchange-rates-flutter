@@ -1,13 +1,15 @@
 import 'package:dio/dio.dart';
+import 'package:exchangerates/components/error_message.dart';
+import 'package:exchangerates/components/info_dialog.dart';
+import 'package:exchangerates/components/last_update.dart';
+import 'package:exchangerates/components/swap_button.dart';
 import 'package:exchangerates/models/exchange_rates.dart';
 import 'package:exchangerates/select_currency.dart';
 import 'package:exchangerates/utils/constant.dart';
 import 'package:flag/flag.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_money_formatter/flutter_money_formatter.dart';
-import 'package:intl/intl.dart';
 import 'package:firebase_admob/firebase_admob.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'models/currency.dart';
 
 class ExchangePage extends StatefulWidget {
@@ -56,14 +58,6 @@ class _ExchangePageState extends State<ExchangePage> {
     );
   }
 
-  _launchURL(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
-
   @override
   void initState() {
     super.initState();
@@ -74,6 +68,14 @@ class _ExchangePageState extends State<ExchangePage> {
       ..show();
     _controller = TextEditingController(text: '1');
     getData();
+  }
+
+  getData() {
+    setState(() {
+      future = dio
+          .get("https://api.exchangeratesapi.io/latest?base=${origin.value}")
+          .then((resp) => ExchangeRates.fromJson(resp.data));
+    });
   }
 
   @override
@@ -112,20 +114,11 @@ class _ExchangePageState extends State<ExchangePage> {
                   return Center(
                       child: Padding(
                     padding: const EdgeInsets.all(16),
-                    child: Column(
-                      children: <Widget>[
-                        Text("Upps error\n${snapshot.error.toString()}"),
-                        OutlineButton(
-                          color: Colors.lightBlue,
-                          onPressed: () {
-                            getData();
-                          },
-                          child: Text(
-                            "Try Again",
-                            style: TextStyle(color: Colors.lightBlue),
-                          ),
-                        )
-                      ],
+                    child: ErrorMessage(
+                      msg: snapshot.error.toString(),
+                      onPressed: () {
+                        getData();
+                      },
                     ),
                   ));
                 } else {
@@ -136,14 +129,6 @@ class _ExchangePageState extends State<ExchangePage> {
                 }
               }),
         ));
-  }
-
-  void getData() {
-    setState(() {
-      future = dio
-          .get("https://api.exchangeratesapi.io/latest?base=${origin.value}")
-          .then((resp) => ExchangeRates.fromJson(resp.data));
-    });
   }
 
   Widget showData(ExchangeRates data) {
@@ -183,16 +168,16 @@ class _ExchangePageState extends State<ExchangePage> {
                             children: <Widget>[
                               InkWell(
                                 onTap: () async {
-                                  final hasil = await Navigator.push(
+                                  final result = await Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => SelectCurrency(
                                                 currency: origin,
                                               )));
 
-                                  if (hasil != null) {
+                                  if (result != null) {
                                     setState(() {
-                                      origin = hasil;
+                                      origin = result;
                                       isBase = true;
                                     });
                                     await getData();
@@ -298,18 +283,16 @@ class _ExchangePageState extends State<ExchangePage> {
                             children: <Widget>[
                               InkWell(
                                 onTap: () async {
-//                                  _bannerAd?.dispose();
-//                                  _bannerAd = null;
-                                  final hasil = await Navigator.push(
+                                  final result = await Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => SelectCurrency(
                                                 currency: destination,
                                               )));
 
-                                  if (hasil != null) {
+                                  if (result != null) {
                                     setState(() {
-                                      destination = hasil;
+                                      destination = result;
                                     });
                                     convertAction();
                                   }
@@ -375,7 +358,7 @@ class _ExchangePageState extends State<ExchangePage> {
               Positioned(
                 top: 140,
                 right: 32,
-                child: InkWell(
+                child: SwapButton(
                   onTap: () {
                     Currency temp = origin;
                     setState(() {
@@ -383,69 +366,13 @@ class _ExchangePageState extends State<ExchangePage> {
                       destination = temp;
                       isBase = !isBase;
                     });
-
                     convertAction();
                   },
-                  child: Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(64)),
-                          border: Border.all(
-                              color: Colors.lightBlueAccent.withOpacity(.3),
-                              width: 7)),
-                      child: CircleAvatar(
-                          backgroundColor: Colors.white,
-                          foregroundColor: Colors.lightBlueAccent,
-                          child: Icon(
-                            Icons.swap_vert,
-                            size: 28,
-                          ))),
                 ),
               ),
             ],
           ),
-          Padding(
-            padding: const EdgeInsets.only(right: 16, top: 24, bottom: 4),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                Icon(
-                  Icons.date_range,
-                  color: Colors.black26,
-                  size: 16,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 4),
-                  child: Text(
-                    "Last Update ${DateFormat('dd MMMM yyyy').format(DateTime.parse(data.date))}",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.black38),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.only(right: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                Text('MajalengkaDev', style: TextStyle(color: Colors.black54)),
-                GestureDetector(
-                  onTap: () {
-                    _launchURL('https://majalengkadev.github.io');
-                  },
-                  child: Text(
-                    'https://majalengkadev.github.io',
-                    style:
-                        TextStyle(fontSize: 13, color: Colors.lightBlueAccent),
-                  ),
-                ),
-              ],
-            ),
-          )
+          LastUpdate(date: data.date)
         ],
       ),
     );
@@ -483,63 +410,7 @@ class _ExchangePageState extends State<ExchangePage> {
       context: context,
       barrierDismissible: true, // user must tap button!
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Credit Source'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text('API', style: TextStyle(color: Colors.black45)),
-                GestureDetector(
-                  onTap: () {
-                    _launchURL('https://exchangeratesapi.io');
-                  },
-                  child: Text(
-                    'https://exchangeratesapi.io',
-                    style:
-                        TextStyle(fontSize: 13, color: Colors.lightBlueAccent),
-                  ),
-                ),
-                SizedBox(
-                  height: 8,
-                ),
-                Text('Theme', style: TextStyle(color: Colors.black45)),
-                GestureDetector(
-                  onTap: () {
-                    _launchURL(
-                        'https://www.uplabs.com/posts/mobile-app-currency-convertor');
-                  },
-                  child: Text(
-                    'https://www.uplabs.com/posts/mobile-app-currency-convertor',
-                    style:
-                        TextStyle(fontSize: 13, color: Colors.lightBlueAccent),
-                  ),
-                ),
-                SizedBox(
-                  height: 8,
-                ),
-                Text('MajalengkaDev', style: TextStyle(color: Colors.black45)),
-                GestureDetector(
-                  onTap: () {
-                    _launchURL('https://majalengkadev.github.io');
-                  },
-                  child: Text(
-                    'https://majalengkadev.github.io',
-                    style:
-                        TextStyle(fontSize: 13, color: Colors.lightBlueAccent),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('Close'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
+        return InfoDialog();
       },
     );
   }
