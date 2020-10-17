@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:exchangerates/exchange_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +8,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Kurs Mata Uang',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),

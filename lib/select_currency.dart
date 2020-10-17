@@ -16,24 +16,31 @@ class _SelectCurrencyState extends State<SelectCurrency> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Select Currency", style: TextStyle(
-          color: Colors.black54
-        ),),
+        title: Text(
+          "Select Currency",
+          style: TextStyle(color: Colors.black54),
+        ),
         backgroundColor: Colors.white,
         elevation: 0,
         leading: InkWell(
-          onTap: (){
-            Navigator.pop(context);
-          },
-            child: Icon(Icons.arrow_back, color: Colors.black54,)),
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Icon(
+              Icons.arrow_back,
+              color: Colors.black54,
+            )),
         actions: <Widget>[
           InkWell(
-              onTap: (){
+              onTap: () {
                 Navigator.pop(context);
               },
               child: Padding(
-                padding: const EdgeInsets.only(right:12),
-                child: Icon(Icons.close, color: Colors.black54,),
+                padding: const EdgeInsets.only(right: 12),
+                child: Icon(
+                  Icons.close,
+                  color: Colors.black54,
+                ),
               )),
         ],
       ),
@@ -45,18 +52,17 @@ class _SelectCurrencyState extends State<SelectCurrency> {
           itemBuilder: (context, index) {
             final x = currencies[index];
             return InkWell(
-              onTap: (){
+              onTap: () {
                 setState(() {
                   Navigator.pop(context, x);
                 });
               },
-              child: ItemCurrency(x, x.key == widget.currency.key ? true : false
-              ),
+              child:
+                  ItemCurrency(x, x.key == widget.currency.key ? true : false),
             );
           },
         ),
       ),
-
     );
   }
 }
