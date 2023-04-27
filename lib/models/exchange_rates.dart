@@ -4,9 +4,9 @@ class ExchangeRates {
   String date;
 
   ExchangeRates({
-    this.rates,
-    this.base,
-    this.date,
+    required this.rates,
+    required this.base,
+    required this.date,
   });
 
   factory ExchangeRates.fromJson(Map<String, dynamic> json) => ExchangeRates(

@@ -8,8 +8,8 @@ import 'package:exchangerates/select_currency.dart';
 import 'package:exchangerates/utils/constant.dart';
 import 'package:flag/flag.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_money_formatter/flutter_money_formatter.dart';
-import 'package:firebase_admob/firebase_admob.dart';
+//import 'package:flutter_money_formatter/flutter_money_formatter.dart';
+//import 'package:firebase_admob/firebase_admob.dart';
 import 'models/currency.dart';
 
 class ExchangePage extends StatefulWidget {
@@ -20,7 +20,7 @@ class ExchangePage extends StatefulWidget {
 class _ExchangePageState extends State<ExchangePage> {
   final Dio dio = Dio();
   bool isLoading = true;
-  TextEditingController _controller;
+  late TextEditingController _controller;
   Currency origin = Currency(
       text: "USD - United States Dollar",
       key: "us",
@@ -36,45 +36,50 @@ class _ExchangePageState extends State<ExchangePage> {
 
   int current = 1;
 
-  Future<ExchangeRates> future;
+  late Future<ExchangeRates> future;
   bool isBase = true;
   double resultConvert = 0;
 
   //ads
-  BannerAd _bannerAd;
+  // BannerAd _bannerAd;
 
-  BannerAd createBannerAd() {
-    return BannerAd(
-      adUnitId: 'ca-app-pub-9619934169053673/5625207799',
-      size: AdSize.banner,
-      targetingInfo: MobileAdTargetingInfo(
-        keywords: <String>['finance', 'money'],
-        contentUrl: 'https://exchangeratesapi.io',
-        childDirected: false,
-      ),
-      listener: (MobileAdEvent event) {
-        print("BannerAd event $event");
-      },
-    );
-  }
+  // BannerAd createBannerAd() {
+  //   return BannerAd(
+  //     adUnitId: 'ca-app-pub-9619934169053673/5625207799',
+  //     size: AdSize.banner,
+  //     targetingInfo: MobileAdTargetingInfo(
+  //       keywords: <String>['finance', 'money'],
+  //       contentUrl: 'https://exchangeratesapi.io',
+  //       childDirected: false,
+  //     ),
+  //     listener: (MobileAdEvent event) {
+  //       print("BannerAd event $event");
+  //     },
+  //   );
+  // }
 
   @override
   void initState() {
     super.initState();
-    FirebaseAdMob.instance
-        .initialize(appId: 'ca-app-pub-9619934169053673~5402966071');
-    _bannerAd = createBannerAd()
-      ..load()
-      ..show();
+    // FirebaseAdMob.instance
+    //     .initialize(appId: 'ca-app-pub-9619934169053673~5402966071');
+    // _bannerAd = createBannerAd()
+    //   ..load()
+    //   ..show();
     _controller = TextEditingController(text: '1');
     getData();
   }
 
   getData() {
     setState(() {
+      var url = "https://api.apilayer.com/exchangerates_data/latest?base=${origin.value}";
       future = dio
-          .get("https://api.exchangeratesapi.io/latest?base=${origin.value}")
+          .get(url, options: Options(headers: {
+            "apikey": "tcuBXTGjC4bEUCKHZIyLVv0d4qo1Yjfb"
+          }))
           .then((resp) => ExchangeRates.fromJson(resp.data));
+
+          print(url);
     });
   }
 
@@ -109,7 +114,7 @@ class _ExchangePageState extends State<ExchangePage> {
               future: future,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  return showData(snapshot.data);
+                  return showData(snapshot.data!);
                 } else if (snapshot.hasError) {
                   return Center(
                       child: Padding(
@@ -157,8 +162,8 @@ class _ExchangePageState extends State<ExchangePage> {
                             child: ClipRRect(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(4)),
-                                child: Flags.getFullFlag(
-                                    '${origin.flag}', 30, 40)),
+                                child: Flag.fromString(
+                                    '${origin.flag}', width: 30, height: 40)),
                           ),
                         ),
                         Expanded(
@@ -260,8 +265,8 @@ class _ExchangePageState extends State<ExchangePage> {
                                 child: ClipRRect(
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(3)),
-                                    child: Flags.getFullFlag(
-                                        '${destination.flag}', 30, 40)),
+                                    child: Flag.fromString(
+                                        '${destination.flag}', width: 30, height: 40)),
                               ),
                               SizedBox(
                                 height: 16,
@@ -335,13 +340,14 @@ class _ExchangePageState extends State<ExchangePage> {
                                 padding:
                                     const EdgeInsets.only(top: 12, left: 4),
                                 child: Text(
-                                  FlutterMoneyFormatter(
-                                          amount: resultConvert,
-                                          settings: MoneyFormatterSettings(
-                                              thousandSeparator: ".",
-                                              decimalSeparator: ","))
-                                      .output
-                                      .nonSymbol,
+                                  "${resultConvert}",
+                                  // FlutterMoneyFormatter(
+                                  //         amount: resultConvert,
+                                  //         settings: MoneyFormatterSettings(
+                                  //             thousandSeparator: ".",
+                                  //             decimalSeparator: ","))
+                                  //     .output
+                                  //     .nonSymbol,
                                   style: TextStyle(
                                       fontSize: 36,
                                       fontWeight: FontWeight.w300),
@@ -386,10 +392,10 @@ class _ExchangePageState extends State<ExchangePage> {
             if (int.parse(_controller.text) > 0) {
               if (isBase) {
                 resultConvert =
-                    v.rates[destination.value] * int.parse(_controller.text);
+                    (v.rates[destination.value]! * int.parse(_controller.text))!;
               } else {
                 resultConvert =
-                    int.parse(_controller.text) / v.rates[origin.value];
+                    int.parse(_controller.text) / v.rates[origin.value]!;
               }
             } else {
               resultConvert = 0;
@@ -417,7 +423,7 @@ class _ExchangePageState extends State<ExchangePage> {
 
   @override
   void dispose() {
-    _bannerAd?.dispose();
+    //_bannerAd?.dispose();
     super.dispose();
   }
 }

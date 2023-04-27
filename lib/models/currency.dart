@@ -14,11 +14,11 @@ class Currency {
   String symbol;
 
   Currency({
-    this.text,
-    this.key,
-    this.value,
-    this.flag,
-    this.symbol,
+    required this.text,
+    required this.key,
+    required this.value,
+    required this.flag,
+    required this.symbol,
   });
 
   factory Currency.fromJson(Map<String, dynamic> json) => Currency(

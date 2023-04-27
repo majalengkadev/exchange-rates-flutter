@@ -58,7 +58,7 @@ class InfoDialog extends StatelessWidget {
         ),
       ),
       actions: <Widget>[
-        FlatButton(
+        TextButton(
           child: Text('Close'),
           onPressed: () {
             Navigator.of(context).pop();

@@ -5,7 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 class LastUpdate extends StatelessWidget {
   final String date;
 
-  LastUpdate({this.date});
+  LastUpdate({required this.date});
 
   @override
   Widget build(BuildContext context) {

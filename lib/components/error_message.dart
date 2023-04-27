@@ -4,15 +4,14 @@ class ErrorMessage extends StatelessWidget {
   final String msg;
   final VoidCallback onPressed;
 
-  ErrorMessage({this.msg, this.onPressed});
+  ErrorMessage({required this.msg, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
         Text("Upps error\n$msg"),
-        OutlineButton(
-          color: Colors.lightBlue,
+        OutlinedButton(
           onPressed: onPressed,
           child: Text(
             "Try Again",

@@ -25,10 +25,11 @@ class ItemCurrency extends StatelessWidget {
                 child: ClipRRect(
                     borderRadius: BorderRadius.all(
                         Radius.circular(3)),
-                    child: Flags.getFullFlag(
+                    child: Flag.fromString(
                         '${currency.flag}',
-                        25,
-                        40)),
+                        height: 25,
+                        width: 40)
+                        ),
               ),
               Padding(
                 padding: const EdgeInsets.only(left:16, right: 8),

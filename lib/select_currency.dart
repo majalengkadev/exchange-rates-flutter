@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 class SelectCurrency extends StatefulWidget {
   final Currency currency;
-  SelectCurrency({this.currency});
+  SelectCurrency({required this.currency});
 
   @override
   _SelectCurrencyState createState() => _SelectCurrencyState();

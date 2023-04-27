@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class SwapButton extends StatelessWidget {
   final VoidCallback onTap;
-  SwapButton({this.onTap});
+  SwapButton({required this.onTap});
 
   @override
   Widget build(BuildContext context) {
